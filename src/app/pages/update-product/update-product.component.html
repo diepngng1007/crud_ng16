@@ -1,18 +1,27 @@
 <div class="container">
-  <h2 class="text-center mt-3">Update Product</h2>
-  <form action="" class="w-75 mx-auto" (ngSubmit)="submitForm()" *ngIf="products && products.length > 0">
-      <div class="form-group">
-          <label for="" class="form-label">Product Name</label>
-          <input type="text" class="form-control" [(ngModel)]="name" name="name" placeholder="Enter product name...">
-      </div>
-      <div class="form-group">
-          <label for="" class="form-label">Product Price</label>
-          <input type="text" class="form-control" [(ngModel)]="price" name="price" placeholder="Enter product price...">
-      </div>
-      <div class="form-group">
-          <label for="" class="form-label">Product Description</label>
-          <input type="text" class="form-control" [(ngModel)]="desc" name="desc" placeholder="Enter product description...">
-      </div>
-      <button class="btn btn-info mt-3">Update product</button>
-  </form>
+    <h2 class="text-center mt-3">Update Product</h2>
+    <form action="" class="w-75 mx-auto" (ngSubmit)="onHandleSubmit()" [formGroup]="productForm">
+        <div class="form-group">
+            <label for="" class="form-label">Product Name</label>
+            <input type="text" class="form-control" formControlName="name" name="name"
+                placeholder="Enter product name...">
+            <div class="text-danger" *ngIf="productForm.get('name')?.hasError('required')">Trường dữ liệu
+                bắt buộc</div>
+        </div>
+        <div class="form-group">
+            <label for="" class="form-label">Product Price</label>
+            <input type="text" class="form-control" formControlName="price" name="price"
+                placeholder="Enter product price...">
+            <div class="text-danger" *ngIf="productForm.get('price')?.hasError('required')">Trường dữ liệu
+                bắt buộc</div>
+        </div>
+        <div class="form-group">
+            <label for="" class="form-label">Product Description</label>
+            <input type="text" class="form-control" formControlName="desc" name="desc"
+                placeholder="Enter product description...">
+            <div class="text-danger" *ngIf="productForm.get('desc')?.hasError('required')">Trường dữ liệu
+                bắt buộc</div>
+        </div>
+        <button class="btn btn-info mt-3">Update product</button>
+    </form>
 </div>

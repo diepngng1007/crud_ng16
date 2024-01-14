@@ -2,41 +2,51 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from 'src/app/interface/product';
 import { ProductsService } from 'src/app/service/products.service';
-
+import { FormBuilder, Validator, Validators } from '@angular/forms';
 @Component({
   selector: 'app-update-product',
   templateUrl: './update-product.component.html',
-  styleUrls: ['./update-product.component.css']
+  styleUrls: ['./update-product.component.css'],
 })
 export class UpdateProductComponent implements OnInit {
-  products : Product[] = []
-  id: any
-  name : any
-  price : any
-  desc : any
-  constructor(private productService : ProductsService,private route: ActivatedRoute) { }
+  products!: Product;
+  validate = false;
+  productForm = this.formBuilder.group({
+    name: ['', [Validators.required]],
+    price: [0, [Validators.required]],
+    desc: ['', [Validators.required]],
+  });
+  constructor(
+    private productService: ProductsService,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-        this.id = params.get('id')
-        if(this.id){
-            this.productService.updateProduct(this.id).subscribe((product) => {
-              this.name = product.name,
-              this.price = product.price,
-              this.desc = product.desc
-            })
-        }
-    })
+      const id: any = params.get('id');
+      this.productService.listOneProduct(id).subscribe((product) => {
+        this.products = product;
+        this.productForm.patchValue({
+          name: this.products.name,
+          price: this.products.price,
+          desc: this.products.desc,
+        });
+      });
+    });
   }
-  submitForm(){
-    const updateProduct : Product = {
-        id: this.id,
-        name: this.id,
-        price: this.price,
-        desc: this.desc
+  onHandleSubmit() {
+    this.validate = true;
+    if (this.productForm.valid && this.products) {
+      const product: Product = {
+        id: this.products.id,
+        name: this.productForm.controls['name'].value || '',
+        price: this.productForm.controls['price'].value || 0,
+        desc: this.productForm.controls['desc'].value || '',
+      };
+      this.productService.updateProduct(product).subscribe((data) => {
+        alert('update thành công');
+      });
     }
-    this.productService.updateProduct(updateProduct).subscribe((data) => {
-        console.log(data)
-    })
   }
 }
